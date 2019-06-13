@@ -6,10 +6,10 @@ namespace WowheadRoutine.Sql
 {
     public enum SqlBuildTypes
     {
-        Creatures = 0,
-        Quests = 1,
+        Creatures   = 0,
+        Quests      = 1,
         Gameobjects = 2,
-        Item = 3,
+        Item        = 3,
     }
 
     public class SqlMgr : Singleton<SqlMgr>
@@ -22,18 +22,21 @@ namespace WowheadRoutine.Sql
             {
                 case SqlBuildTypes.Creatures:
                     {
+                        builder = new CreaturesBuilder();
 
                         break;
                     }
 
                 case SqlBuildTypes.Gameobjects:
                     {
+                        builder = new GameobjectsBuilder();
 
                         break;
                     }
 
                 case SqlBuildTypes.Item:
                     {
+                        builder = new ItemBuilder();
 
                         break;
                     }

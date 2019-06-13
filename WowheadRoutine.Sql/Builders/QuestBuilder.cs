@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WowheadRoutine.Sql.Contracts;
+﻿using WowheadRoutine.Sql.Contracts;
 
 namespace WowheadRoutine.Sql.Builders
 {
-    class QuestBuilder : ISqlBuilder
+    public class QuestBuilder : BaseBuilder, ISqlBuilder
     {
+        /// <summary>
+        /// Quests information database builder, child from <see cref="BaseBuilder"/>
+        /// </summary>
+        public QuestBuilder() : base() { }
     }
 }

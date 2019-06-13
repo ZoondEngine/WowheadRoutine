@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using WowheadRoutine.Sql.Builders;
 
 namespace WowheadRoutine.Sql.Contracts
 {
     public interface ISqlBuilder
     {
+        void Make(SqlAction act);
+        ISqlBuilder Append(string statement, params object[] values);
+        void Build();
     }
 }

@@ -41,6 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Head\BaseBuilder.cs" />
+    <Compile Include="Builders\CreaturesBuilder.cs" />
+    <Compile Include="Builders\GameobjectsBuilder.cs" />
+    <Compile Include="Builders\ItemBuilder.cs" />
+    <Compile Include="Head\PreparedStatements.cs" />
     <Compile Include="Builders\QuestBuilder.cs" />
     <Compile Include="Contracts\ISqlBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

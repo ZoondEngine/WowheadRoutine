@@ -52,6 +52,10 @@
     <Compile Include="SqlMgr.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WowheadRoutine.Assert\WowheadRoutine.Assert.csproj">
+      <Project>{0870BC74-CDAC-4BC7-9296-BAF68AEE92B0}</Project>
+      <Name>WowheadRoutine.Assert</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WowheadRoutine.Support\WowheadRoutine.Support.csproj">
       <Project>{7F86F794-E26C-428B-BA27-6F3604D5F44D}</Project>
       <Name>WowheadRoutine.Support</Name>

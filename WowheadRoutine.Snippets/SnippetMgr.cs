@@ -81,6 +81,28 @@ namespace WowheadRoutine.Snippets
             LoadedSnippets.Clear();
         }
 
+        public void Call(string name, params object[] data)
+        {
+            bool result = false;
+
+            foreach(var snippet in LoadedSnippets)
+            {
+                if(snippet.GetType().Name.ToLower() .Contains(name.ToLower()))
+                {
+                    OnSnippetCalled?.Invoke(snippet);
+
+                    snippet.Run(data);
+                    result = true;
+
+                    break;
+                }
+            }
+
+            if (!result)
+            {
+                OutMgr.CreateConsole().WriteLine("No snippet found to process this command", OutLevel.Error);
+            }
+        }
         public void Call<T>(params object[] data)
         {
             bool result = false;

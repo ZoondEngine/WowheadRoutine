@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using WowheadRoutine.Assert;
 using WowheadRoutine.Sql.Contracts;
 
 namespace WowheadRoutine.Sql.Builders
@@ -26,11 +29,13 @@ namespace WowheadRoutine.Sql.Builders
         protected virtual string MakeQuery(string statement, string[] data)
         {
             string ready = "";
+            int j = 0;
             for (int i = 0; i < statement.Length; i++)
             {
                 if (statement[i] == '?')
                 {
-                    ready += data[i];
+                    ready += data[j];
+                    j++;
                 }
                 else
                 {
@@ -55,7 +60,7 @@ namespace WowheadRoutine.Sql.Builders
         }
         protected virtual void WriteToFile(List<string> queries, string whatIsIt)
         {
-            using (var file = File.OpenWrite(DateTime.Now.ToString("dd/MM/yy_hh-mm-ss") + $"_{whatIsIt}.sql"))
+            using (var file = File.OpenWrite("Sql\\" + DateTime.Now.ToString("dd-MM-yy_hh-mm-ss") + $"_{whatIsIt}.sql"))
             {
                 foreach(var query in queries)
                 {
@@ -75,7 +80,15 @@ namespace WowheadRoutine.Sql.Builders
         {
             if (IsContainsNeedValues(statement, values.Length))
             {
-                AlreadyBuildedQueries.Add(MakeQuery(statement, (string[])values));
+                string[] arr = ((IEnumerable)values).Cast<object>()
+                                 .Select(x => x.ToString())
+                                 .ToArray();
+
+                AlreadyBuildedQueries.Add(MakeQuery(statement, arr) + Environment.NewLine);
+            }
+            else
+            {
+                OutMgr.Instance.WriteLine($"Statement: '{statement}' not contains is needed values. Received count: '{values.Length}'", OutLevel.Error);
             }
 
             return this;

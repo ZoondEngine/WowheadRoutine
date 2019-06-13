@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1ED3E3F4-F39B-4DE3-856F-E807038F9AA8}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>WowheadRoutine</RootNamespace>
+    <AssemblyName>WowheadRoutine</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WowheadRoutine.Assert\WowheadRoutine.Assert.csproj">
+      <Project>{0870bc74-cdac-4bc7-9296-baf68aee92b0}</Project>
+      <Name>WowheadRoutine.Assert</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WowheadRoutine.Commands\WowheadRoutine.Commands.csproj">
+      <Project>{2d519e0b-c879-4350-9e33-25d827d491a5}</Project>
+      <Name>WowheadRoutine.Commands</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WowheadRoutine.Snippets\WowheadRoutine.Snippets.csproj">
+      <Project>{69607369-a479-4123-bef7-d6890e50beda}</Project>
+      <Name>WowheadRoutine.Snippets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WowheadRoutine.Sql\WowheadRoutine.Sql.csproj">
+      <Project>{18e2f427-15ea-413d-af57-50ca22af108e}</Project>
+      <Name>WowheadRoutine.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WowheadRoutine.Support\WowheadRoutine.Support.csproj">
+      <Project>{7f86f794-e26c-428b-ba27-6f3604d5f44d}</Project>
+      <Name>WowheadRoutine.Support</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

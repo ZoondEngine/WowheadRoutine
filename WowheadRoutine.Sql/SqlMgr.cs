@@ -1,55 +1,24 @@
 ﻿using WowheadRoutine.Sql.Builders;
-using WowheadRoutine.Sql.Contracts;
 using WowheadRoutine.Support;
 
 namespace WowheadRoutine.Sql
 {
-    public enum SqlBuildTypes
-    {
-        Creatures   = 0,
-        Quests      = 1,
-        Gameobjects = 2,
-        Item        = 3,
-    }
-
     public class SqlMgr : Singleton<SqlMgr>
     {
-        public static ISqlBuilder Create(SqlBuildTypes type)
+        private BaseBuilder BuilderInstance { get; set; }
+
+        public SqlMgr()
         {
-            ISqlBuilder builder = null;
+            BuilderInstance = new BaseBuilder();
+        }
 
-            switch(type)
-            {
-                case SqlBuildTypes.Creatures:
-                    {
-                        builder = new CreaturesBuilder();
+        public BaseBuilder GetBuilder() => BuilderInstance;
 
-                        break;
-                    }
-
-                case SqlBuildTypes.Gameobjects:
-                    {
-                        builder = new GameobjectsBuilder();
-
-                        break;
-                    }
-
-                case SqlBuildTypes.Item:
-                    {
-                        builder = new ItemBuilder();
-
-                        break;
-                    }
-
-                case SqlBuildTypes.Quests:
-                    {
-                        builder = new QuestBuilder();
-
-                        break;
-                    }
-            }
-
-            return builder;
+        public void FastOnce(string key, string query, params string[] values)
+        {
+            GetBuilder()
+                .AddStatement(new RawStatement(query, key))
+                .AddValues(key, values);
         }
     }
 }

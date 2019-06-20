@@ -1,5 +1,4 @@
-﻿using IX.Composer.Architecture;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using WowheadRoutine.Assert.Providers;
 using WowheadRoutine.Support;

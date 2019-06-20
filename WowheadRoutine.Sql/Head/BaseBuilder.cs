@@ -1,104 +1,68 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using WowheadRoutine.Assert;
-using WowheadRoutine.Sql.Contracts;
+using WowheadRoutine.Sql.Datatypes;
 
 namespace WowheadRoutine.Sql.Builders
 {
-    public enum SqlAction
+    public class BaseBuilder
     {
-        Creatures_QuestEnder,
-        Creatures_QuestStarter,
-    }
+        private List<PreparedStatements> Prepared { get; set; }
 
-    public class BaseBuilder : ISqlBuilder
-    {
-        private SqlAction CurrentAction { get; set; }
-        private List<string> AlreadyBuildedQueries { get; set; } = new List<string>();
-
-        protected BaseBuilder()
+        public BaseBuilder()
         {
             if (!Directory.Exists("Sql"))
                 Directory.CreateDirectory("Sql");
+
+            Prepared = new List<PreparedStatements>();
         }
 
-        protected virtual string MakeQuery(string statement, string[] data)
+        public virtual BaseBuilder AddStatement(RawStatement statement)
         {
-            string ready = "";
-            int j = 0;
-            for (int i = 0; i < statement.Length; i++)
+            if(!Prepared.Any((x) => x.Key == statement.Key))
             {
-                if (statement[i] == '?')
-                {
-                    ready += data[j];
-                    j++;
-                }
-                else
-                {
-                    ready += statement[i];
-                }
-            }
-
-            return ready;
-        }
-        protected virtual bool IsContainsNeedValues(string statement, int valuesCount)
-        {
-            int j = 0;
-            for (int i = 0; i < statement.Length; i++)
-            {
-                if (statement[i] == '?')
-                {
-                    j++;
-                }
-            }
-
-            return valuesCount == j;
-        }
-        protected virtual void WriteToFile(List<string> queries, string whatIsIt)
-        {
-            using (var file = File.OpenWrite("Sql\\" + DateTime.Now.ToString("dd-MM-yy_hh-mm-ss") + $"_{whatIsIt}.sql"))
-            {
-                foreach(var query in queries)
-                {
-                    byte[] buffer = Encoding.UTF8.GetBytes(query);
-
-                    file.Write(buffer, 0, buffer.Length);
-                }
-            }
-        }
-
-        public void Make(SqlAction act)
-        {
-            CurrentAction = act;
-        }
-
-        public ISqlBuilder Append(string statement, params object[] values)
-        {
-            if (IsContainsNeedValues(statement, values.Length))
-            {
-                string[] arr = ((IEnumerable)values).Cast<object>()
-                                 .Select(x => x.ToString())
-                                 .ToArray();
-
-                AlreadyBuildedQueries.Add(MakeQuery(statement, arr) + Environment.NewLine);
-            }
-            else
-            {
-                OutMgr.Instance.WriteLine($"Statement: '{statement}' not contains is needed values. Received count: '{values.Length}'", OutLevel.Error);
+                Prepared.Add(new PreparedStatements(statement.Key, statement.Query, GetIndicies(statement.Query), new List<string>()));
             }
 
             return this;
         }
 
-        public void Build()
+        public virtual BaseBuilder AddValues(string key, params string[] values)
         {
-            if (AlreadyBuildedQueries.Count > 0)
+            if(Prepared.Any((x) => x.Key == key))
             {
-                WriteToFile(AlreadyBuildedQueries, CurrentAction.ToString());
+                Prepared.First((x) => x.Key == key).AddValue(values);
+            }
+
+            return this;
+        }
+
+        private int GetIndicies(string raw)
+        {
+            return raw.Count((x) => x == '?');
+
+            /* TODO: Remove
+            int j = 0;
+            
+            for (int i = 0; i < raw.Length; i++)
+            {
+                if (raw[i] == '?')
+                {
+                    j++;
+                }
+            }
+
+            return j;
+            */
+        }
+        public async virtual void WriteToFiles()
+        {
+            foreach(var item in Prepared)
+            {
+                string currentName = "Sql\\" + DateTime.Now.ToString("dd-MM-yy_hh-mm-ss") + $"_{item.Key}.sql";
+
+                File.WriteAllLines(currentName, await item.MakeAsync());
             }
         }
     }

@@ -41,13 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Datatypes\PreparedStatements.cs" />
+    <Compile Include="Head\RawStatement.cs" />
     <Compile Include="Head\BaseBuilder.cs" />
-    <Compile Include="Builders\CreaturesBuilder.cs" />
-    <Compile Include="Builders\GameobjectsBuilder.cs" />
-    <Compile Include="Builders\ItemBuilder.cs" />
-    <Compile Include="Head\PreparedStatements.cs" />
-    <Compile Include="Builders\QuestBuilder.cs" />
-    <Compile Include="Contracts\ISqlBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlMgr.cs" />
   </ItemGroup>

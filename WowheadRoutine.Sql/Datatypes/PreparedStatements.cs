@@ -43,7 +43,7 @@ namespace WowheadRoutine.Sql.Datatypes
         {
             get
             {
-                if (ValuesList.Count < index)
+                if (ValuesList.Count > index)
                 {
                     return ValuesList[index];
                 }
@@ -61,7 +61,7 @@ namespace WowheadRoutine.Sql.Datatypes
                 {
                     if(values[i] == values.Last())
                     {
-                        ready += $"'{values}')";
+                        ready += $"'{values[i]}')";
                     }
                     else
                     {
@@ -69,7 +69,7 @@ namespace WowheadRoutine.Sql.Datatypes
                     }
                 }
 
-
+                ValuesList.Add(ready);
             }
             else
                 throw new FormatException($"Incorrect values count for adding to statement. Need: '{IndiciesCount}', received: {values.Length}");
@@ -77,22 +77,15 @@ namespace WowheadRoutine.Sql.Datatypes
 
         public string[] Make()
         {
-            string[] maked = new string[ValuesList.Count];
-            maked[0] = Key;
+            string[] maked = new string[ValuesList.Count+1];
+            maked[0] = Query;
 
             for(int i = 0; i < ValuesList.Count; i++)
             {
-                maked[i + 1] = GetValuesByIndex(i);
-
-                if((i - 1) == ValuesList.Count)
-                {
-                    maked[i + 1] += ";";
-                }
-                else
-                {
-                    maked[i + 1] += ",";
-                }
+                maked[i + 1] = GetValuesByIndex(i) + ",";
             }
+
+            maked[ValuesList.Count + 1] = maked.Last().Replace(',', ';');
 
             return maked;
         }

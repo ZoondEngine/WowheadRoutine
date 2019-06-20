@@ -16,9 +16,7 @@ namespace WowheadRoutine.Sql
 
         public void FastOnce(string key, string query, params string[] values)
         {
-            GetBuilder()
-                .AddStatement(new RawStatement(query, key))
-                .AddValues(key, values);
+            GetBuilder().AddQuery(key, query, values);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace WowheadRoutine.Sql.Builders
     public class BaseBuilder
     {
         private List<PreparedStatements> Prepared { get; set; }
+        private Dictionary<string, List<string>> Queries { get; set; }
 
         public BaseBuilder()
         {
@@ -16,13 +17,16 @@ namespace WowheadRoutine.Sql.Builders
                 Directory.CreateDirectory("Sql");
 
             Prepared = new List<PreparedStatements>();
+            Queries = new Dictionary<string, List<string>>();
         }
 
         public virtual BaseBuilder AddStatement(RawStatement statement)
         {
             if(!Prepared.Any((x) => x.Key == statement.Key))
             {
-                Prepared.Add(new PreparedStatements(statement.Key, statement.Query, GetIndicies(statement.Query), new List<string>()));
+                int indicies = GetIndicies(statement.Query, out string query);
+
+                Prepared.Add(new PreparedStatements(statement.Key, query, indicies, new List<string>()));
             }
 
             return this;
@@ -38,24 +42,61 @@ namespace WowheadRoutine.Sql.Builders
             return this;
         }
 
-        private int GetIndicies(string raw)
+        public virtual BaseBuilder AddQuery(string key, string statement, params string[] values)
         {
-            return raw.Count((x) => x == '?');
+            if(!Queries.ContainsKey(key))
+            {
+                Queries.Add(key, new List<string>());
+            }
 
-            /* TODO: Remove
+            Queries[key].Add(ParseStatement(statement, values));
+
+            return this;
+        }
+
+        public string ParseStatement(string raw, params string[] values)
+        {
             int j = 0;
-            
+            string ready = "";
+
+            for(int i = 0; i < raw.Length; i++)
+            {
+                if(raw[i] == '?')
+                {
+                    ready += $"{values[j]}";
+                    j++;
+                }
+                else
+                {
+                    ready += raw[i];
+                }
+            }
+
+            return ready + ";\n";
+        }
+
+        private int GetIndicies(string raw, out string formatted)
+        {
+            int j = 0;
+            string ready = "";
+
             for (int i = 0; i < raw.Length; i++)
             {
                 if (raw[i] == '?')
                 {
                     j++;
                 }
+                else
+                {
+                    ready += raw[i];
+                }
             }
 
+            formatted = ready;
+
             return j;
-            */
         }
+
         public async virtual void WriteToFiles()
         {
             foreach(var item in Prepared)
@@ -63,6 +104,16 @@ namespace WowheadRoutine.Sql.Builders
                 string currentName = "Sql\\" + DateTime.Now.ToString("dd-MM-yy_hh-mm-ss") + $"_{item.Key}.sql";
 
                 File.WriteAllLines(currentName, await item.MakeAsync());
+            }
+
+            foreach(var item in Queries)
+            {
+                string currentName = "Sql\\" + DateTime.Now.ToString("dd-MM-yy_hh-mm-ss") + $"_{item.Key}.sql";
+
+                foreach(var query in item.Value)
+                {
+                    File.AppendAllText(currentName, query);
+                }
             }
         }
     }
